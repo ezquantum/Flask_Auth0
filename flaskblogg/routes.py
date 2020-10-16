@@ -9,13 +9,15 @@ from werkzeug.exceptions import HTTPException
 from os import environ as env
 from flaskblogg import app
 import json
-from functools import wraps
+from functools import wraps, update_wrapper
+from flask_cors import CORS, cross_origin
 from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import User, Post, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import requires_auth, AuthError
+from .auth.auth import AuthError, require_auth_from_session
 from flask_login import current_user
+
 
 # from flaskblog.auth import AuthError, requires_auth
 
@@ -64,7 +66,7 @@ def register():
         session['profile'] = {
             'name': form.username.data,
             'email': form.email.data,
-            'is_logged_in': True
+            'permission':'EDITOR'
         }   
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('home'))
@@ -117,8 +119,8 @@ def logout():
                            userinfo_pretty=None, indent=4)
 
 
-@ app.route('/dashboard')
-@ auth.requires_auth()
+@app.route('/dashboard')
+@require_auth_from_session()
 def dashboard():
     return render_template('dashboard.html',
                            userinfo=session['profile'],
@@ -160,7 +162,7 @@ def callback_handling():
         'name': userinfo['name'],
         'email': userinfo['email'],
         'picture': userinfo['picture'],
-        'is_logged_in': True
+        'permission':'EDITOR' #default permission, need to change this later
     }
     print('session')
     print(session)
@@ -211,10 +213,8 @@ def callback_handling():
     return redirect('/')
 
 def which_user():
-
     if session is None:
-        flash('Your need to login', 'error')
-        return None
+        return 'Guest'
     
     if 'profile' in session:
         profile = session['profile']
@@ -222,18 +222,30 @@ def which_user():
         return user.id
     
     else:
-        flash('Your need to login', 'error')
-        return None
+        return 'Guest'
  
 
-@app.route('/post/new', methods=['GET', 'POST'])
-#@auth.requires_auth()
-def new_post():
+@app.route('/all-posts', methods=['GET'])
+@require_auth_from_session()
+def get_all_posts(token):
+    try:
+        posts = Post.query.all()
+        posts_list = [str(post.title) for post in posts]
 
+        return jsonify({
+            'success': True, 
+            'posts': posts_list,
+        }), 200
+    except:
+        abort(500)
+
+@app.route('/post/new', methods=['GET', 'POST'])
+@require_auth_from_session()
+def new_post():
     form = PostForm()
     user = which_user()
  
-    if user is None:
+    if user == 'Guest':
         return redirect(url_for('login'))
 
     if form.validate_on_submit():
@@ -250,14 +262,51 @@ def new_post():
     return render_template('create_post.html', title='New Post', form=form, userinfo=session['profile'])
 
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET'])
 def post(post_id):
     post=Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
+# @app.route('/post/<int:post_id>/update', methods=['POST'])
+# @requires_auth('post:post')
+# def patch_drink(jwt, post_id):
+
+
+#     data = request.get_json()
+#     title = data.get('title', None)
+
+#     content = Post.query.filter_by(id=drink_id).one_or_none() #drink = Drink
+
+
+#     if content is None: #drink
+#         abort(404)
+
+#     if title is None:
+#         abort(400)
+
+#     try:
+#         content.title = title
+#         content.update()
+
+#         return jsonify({
+#             'success': True,
+#         })
+#     except:
+#         abort(422)
+
 # @app.route('/post/<int:post_id>/update')
-# def update_post(post_id):
+# @cross_origin(headers=["Content-Type", "Authorization"])
+# @requires_auth('post:post')
+# def update_post(jwt, post_id):
 #     if session is None:
 #         flash('Log in, please')
 #         return redirect(url_for('home'))
-#     
+#     # post=Post.query.get_or_404(post_id)
+#     if session:
+#         form=PostForm()
+#         return render_template('create_post.html', title='Update Post', form=form, userinfo=session['profile'])
+
+
+
+
+

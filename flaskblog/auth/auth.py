@@ -18,55 +18,97 @@ class AuthError(Exception):
         self.error = error
         self.status_code = status_code
 
+#AUTHORIZATION HEADER
 
-# Authorization Header
 def get_token_auth_header():
+    """Obtains the Access Token from the Authorization Header
     """
-    Obtains the Access Token from the Authorization Header
-    """
-
-    # get auth from the header
-
-    # session['profile'] = {
-    #     'user_id': userinfo['sub'],
-    #     'name': userinfo['name'],
-    #     'picture': userinfo['picture']
-    # }
-    auth = request.headers.get('Authorization', None)
+    auth = request.headers.get("Authorization", None)
     if not auth:
-        raise AuthError({
-            'code': 'authorization_header_missing',
-            'description': 'Authorization header is expected.'
-        }, 401)
+        raise AuthError({"code": "authorization_header_missing",
+                        "description":
+                            "Authorization header is expected"}, 401)
 
-    # split keyword and token
     parts = auth.split()
 
-    # Verify bearer is there
-    if parts[0].lower() != 'bearer':
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must begin with "Bearer".'
-        }, 401)
-
-    # auth header MUST be two parts
+    if parts[0].lower() != "bearer":
+        raise AuthError({"code": "invalid_header",
+                        "description":
+                            "Authorization header must start with"
+                            " Bearer"}, 401)
     elif len(parts) == 1:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Token not found.'
-        }, 401)
-
-    # auth header must have 2 parts
+        raise AuthError({"code": "invalid_header",
+                        "description": "Token not found"}, 401)
     elif len(parts) > 2:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must be bearer token.'
-        }, 401)
+        raise AuthError({"code": "invalid_header",
+                        "description":
+                            "Authorization header must be"
+                            " Bearer token"}, 401)
 
-    # get token from parts and return
     token = parts[1]
     return token
 
+# Authorization Header [@ORIGINAL]
+# def get_token_auth_header():
+#     """
+#     Obtains the Access Token from the Authorization Header
+#     """
+
+#     # get auth from the header
+
+#     # session['profile'] = {
+#     #     'user_id': userinfo['sub'],
+#     #     'name': userinfo['name'],
+#     #     'picture': userinfo['picture']
+#     # }
+#     auth = request.headers.get('Authorization', None)
+#     if not auth:
+#         raise AuthError({
+#             'code': 'authorization_header_missing',
+#             'description': 'Authorization header is expected.'
+#         }, 401)
+
+#     # split keyword and token
+#     parts = auth.split()
+
+#     # Verify bearer is there
+#     if parts[0].lower() != 'bearer':
+#         raise AuthError({
+#             'code': 'invalid_header',
+#             'description': 'Authorization header must begin with "Bearer".'
+#         }, 401)
+
+#     # auth header MUST be two parts
+#     elif len(parts) == 1:
+#         raise AuthError({
+#             'code': 'invalid_header',
+#             'description': 'Token not found.'
+#         }, 401)
+
+#     # auth header must have 2 parts
+#     elif len(parts) > 2:
+#         raise AuthError({
+#             'code': 'invalid_header',
+#             'description': 'Authorization header must be bearer token.'
+#         }, 401)
+
+#     # get token from parts and return
+#     token = parts[1]
+#     return token
+
+def requires_scope(required_scope):
+    """Determines if the required scope is present in the Access Token
+    Args:
+        required_scope (str): The scope required to access the resource
+    """
+    token = get_token_auth_header()
+    unverified_claims = jwt.get_unverified_claims(token)
+    if unverified_claims.get("scope"):
+            token_scopes = unverified_claims["scope"].split()
+            for token_scope in token_scopes:
+                if token_scope == required_scope:
+                    return True
+    return False
 
 def check_permissions(permission, payload):
     """
@@ -156,20 +198,64 @@ def verify_decode_jwt(token):
     }, 400)
 
 
+
+    ######################
 def requires_auth(permission=''):
-    '''
-    authhentication decorator function
-    '''
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-
             token = get_token_auth_header()
-            
-            print(token)
-            payload = verify_decode_jwt(token)
+            try:
+                payload = verify_decode_jwt(token)
+            except Exception:
+                raise AuthError({
+                    'code': 'invalid_token',
+                    'description': 'Access denied due to invalid token'
+                }, 401)
+
             check_permissions(permission, payload)
+
             return f(payload, *args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
+
+
+
+
+
+#######################
+
+
+# def requires_auth(permission=''):
+#     '''
+#     authhentication decorator function
+#     '''
+#     def requires_auth_decorator(f):
+#         @wraps(f)
+#         def wrapper(*args, **kwargs):
+
+#             token = get_token_auth_header()
+
+
+#             payload = verify_decode_jwt(token)
+#             check_permissions(permission, payload)
+#             return f(payload, *args, **kwargs)
+
+#         return wrapper
+#     return requires_auth_decorator
+
+
+
+"""
+Possibly need this
+# def requires_sign_in(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         if 'jwt_token' not in session:
+#             # Redirect to Login page here
+#             return redirect(url_for('home'))
+#         return f(*args, **kwargs)
+
+#     return decorated
+"""

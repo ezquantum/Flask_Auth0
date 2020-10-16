@@ -156,6 +156,9 @@ def verify_decode_jwt(token):
     }, 400)
 
 
+#use when POST from postman with curl
+#this method requires front end to send Beaerer token to the endpoint
+#Reference: https://gomakethings.com/using-oauth-with-fetch-in-vanilla-js/
 def requires_auth(permission=''):
     '''
     authhentication decorator function
@@ -167,6 +170,29 @@ def requires_auth(permission=''):
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
+
+        return wrapper
+    return requires_auth_decorator
+
+
+#use when user logged in, and we store his/her permission in session
+#this method requires no front end Bearer token because we use session instead
+#Reference: https://community.auth0.com/t/storing-a-users-permissions-when-they-login/36398
+def require_auth_from_session():
+    '''
+    check session
+    '''
+    from flask import session, Response
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            # Check to see if it's in their session
+            if session is None or 'profile' not in session:
+                # If it isn't return our access denied message (you can also return a redirect or render_template)
+                return Response("Access denied, please login first")
+
+            # Otherwise just send them where they wanted to go
+            return func(*args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
