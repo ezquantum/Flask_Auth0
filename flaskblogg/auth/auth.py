@@ -192,7 +192,7 @@ def require_auth_from_session():
                 return Response("Access denied, please login first")
 
             # Otherwise just send them where they wanted to go
-            return func(*args, **kwargs)
+            return f(*args, **kwargs)
 
         return wrapper
     return requires_auth_decorator

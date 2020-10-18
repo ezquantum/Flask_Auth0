@@ -13,25 +13,11 @@ from functools import wraps, update_wrapper
 from flask_cors import CORS, cross_origin
 from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
-from flaskblogg.models import User, Post, db, db_drop_and_create_all
+from flaskblogg.models import User, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
 from .auth.auth import AuthError, require_auth_from_session
 from flask_login import current_user
 
-
-# from flaskblog.auth import AuthError, requires_auth
-
-# db.create_all()
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = 'Login'
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return UserInfo.query.get(int(user_id))
-
-# class LoginManager(app=None, add_context_processor=True)
-# def load_user(session):
 
 
 @app.route("/")
@@ -66,7 +52,7 @@ def register():
         session['profile'] = {
             'name': form.username.data,
             'email': form.email.data,
-            'permission':'EDITOR'
+            #'permission':'EDITOR'
         }   
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('home'))
@@ -119,10 +105,20 @@ def logout():
                            userinfo_pretty=None, indent=4)
 
 
+ 
+#see the posts made from yourself
 @app.route('/dashboard')
+#see the posts made from that user
+@app.route('/dashboard/<int:user_id>')
 @require_auth_from_session()
-def dashboard():
+def dashboard(user_id = None):
+    if user_id is not None:
+        posts = Post.query.filter_by(user_id=user_id).all()
+    else:
+        user_id = get_user_id()
+        posts = Post.query.filter_by(user_id=user_id).all()
     return render_template('dashboard.html',
+                           posts = posts,
                            userinfo=session['profile'],
                            userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
 
@@ -162,7 +158,7 @@ def callback_handling():
         'name': userinfo['name'],
         'email': userinfo['email'],
         'picture': userinfo['picture'],
-        'permission':'EDITOR' #default permission, need to change this later
+        #'permission':'EDITOR' #default permission, need to change this later
     }
     print('session')
     print(session)
@@ -172,9 +168,7 @@ def callback_handling():
     1. find user by session['profile']['name']
     2. if user does not exist, save user into User model/database
     sample code: 
-
     user = User.query.filter_by(email=userinfo['name']).first() 
-
     """
 
     # check if user already exists
@@ -187,7 +181,6 @@ def callback_handling():
                                default='default.jpg')
         last_login_date = db.Column(db.DateTime, nullable=False)
         posts = db.relationship('Post', backref='author', lazy=True)
-
         def __repr__(self):
             return f"User('{self.username}', '{self.email}', '{self.image_file}')"
     """
@@ -212,18 +205,41 @@ def callback_handling():
         user.update()            
     return redirect('/')
 
-def which_user():
+
+
+
+def get_user_id():
+    guest = Guest()
     if session is None:
-        return 'Guest'
+        return guest['id']
     
     if 'profile' in session:
         profile = session['profile']
         user = User.query.filter_by(username=profile['name']).first()
-        return user.id
+        if user is not None:
+            return user.id
+        else:
+            return guest['id']
     
     else:
-        return 'Guest'
+        return guest['id']
  
+
+@app.route('/user/<int:user_id>/', methods=['GET'])
+@require_auth_from_session()
+def get_all_posts_from_user(user_id):
+    try:
+        posts = Post.query.filter_by(user_id=user_id).all()
+        posts_list = [str(post.title) for post in posts]
+
+        return jsonify({
+            'success': True, 
+            'user_id':user_id,
+            'posts': posts_list,
+        }), 200
+    except:
+        abort(500)
+
 
 @app.route('/all-posts', methods=['GET'])
 @require_auth_from_session()
@@ -243,9 +259,9 @@ def get_all_posts(token):
 @require_auth_from_session()
 def new_post():
     form = PostForm()
-    user = which_user()
+    user_id = get_user_id()
  
-    if user == 'Guest':
+    if user_id == -1:
         return redirect(url_for('login'))
 
     if form.validate_on_submit():
@@ -253,7 +269,7 @@ def new_post():
         # content = request.form['content']
 
         #find user by session
-        message = Post(title=form.title.data, content=form.content.data, user_id = user)
+        message = Post(title=form.title.data, content=form.content.data, user_id = user_id)
         db.session.add(message)
         db.session.commit()
         flash('Your Post Has Been Created!', 'success')
@@ -263,50 +279,69 @@ def new_post():
 
 
 @app.route('/post/<int:post_id>', methods=['GET'])
+@require_auth_from_session()
 def post(post_id):
     post=Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
-# @app.route('/post/<int:post_id>/update', methods=['POST'])
-# @requires_auth('post:post')
-# def patch_drink(jwt, post_id):
+
+@app.route('/post/<int:post_id>/update', methods=['GET','POST'])
+@require_auth_from_session()
+def update_post(post_id):
+    post=Post.query.get_or_404(post_id)
+    user_id = get_user_id()
+    if post is None:
+        abort(403)
+
+    if post.user_id !=  user_id:
+        abort(403)
+
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post.title = form.title.data  
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your Post Has Been Updated!', 'success')
+        return redirect(url_for('post', post_id = post.id))
+        
+    form.title.data = post.title
+    form.content.data = post.content
+    return render_template('create_post.html', title='Update Post', form=form, userinfo=session['profile'])
 
 
-#     data = request.get_json()
-#     title = data.get('title', None)
+#Patch all Guest user's posts with user_id specified below
+@app.route('/patch-guest-user', methods=['PATCH'])
+@require_auth_from_session()
+def patch_post(user_id):
+    guest = Guest()
+    post=Post.query.filter_by(user_id=guest.id).all()
+    
+    if post is None:
+        return Response("There is no post under Guest user")
 
-#     content = Post.query.filter_by(id=drink_id).one_or_none() #drink = Drink
+    body = request.get_json()
 
+    try:
+        if 'user_id' in body:
+            user_id = body.get('user_id')
 
-#     if content is None: #drink
-#         abort(404)
+            #validate if the user does exist in db
+            user = User.query.get(user_id)
 
-#     if title is None:
-#         abort(400)
+            if user is not None:
+                post.user_id = user_id
+                post.update()
+                return jsonify({
+                    'success': True,
+                })
+            else:
+                #user does not exit in the db
+                abort(400)           
 
-#     try:
-#         content.title = title
-#         content.update()
-
-#         return jsonify({
-#             'success': True,
-#         })
-#     except:
-#         abort(422)
-
-# @app.route('/post/<int:post_id>/update')
-# @cross_origin(headers=["Content-Type", "Authorization"])
-# @requires_auth('post:post')
-# def update_post(jwt, post_id):
-#     if session is None:
-#         flash('Log in, please')
-#         return redirect(url_for('home'))
-#     # post=Post.query.get_or_404(post_id)
-#     if session:
-#         form=PostForm()
-#         return render_template('create_post.html', title='Update Post', form=form, userinfo=session['profile'])
-
-
-
-
-
+    except: 
+        #user does not exit in body, malformed request
+        abort(400)
+     
+ 
+ 

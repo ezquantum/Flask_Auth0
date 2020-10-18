@@ -22,8 +22,14 @@ def db_drop_and_create_all():
 
 
 ###################
+def Guest():
+    #create a dict for guest user
+    return dict({'id':-1,
+        'username':'Guest',
+        'email':'',
+        'posts':None})
 
-
+    
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,7 +43,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}', '{self.image_file}', '{self.id}')"
 
     def insert(self):
         db.session.add(self)
