@@ -15,10 +15,12 @@ from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import AuthError, requires_auth_from_session, requires_auth
+from .auth.auth import AuthError, requires_auth_from_session, requires_auth, AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET, CLIENT_ID_TEST, CLIENT_SECRET_TEST, API_BASE_URL
 #from flask_login import current_user
 
 CORS(app)
+
+
 # CORS Headers 
 @app.after_request
 def after_request(response):
@@ -79,11 +81,11 @@ def login():
     # # redirect_uri = url_for('authorize', _external=True)
     ###########test to get bearer token###########
     import http.client
-    print('------------------------oh yeah we log in------------------------')
+    print('------------------------test------------------------')
     conn = http.client.HTTPSConnection("coffestack.us.auth0.com")
 
+    #payload = "{\"client_id\":\""+CLIENT_ID_TEST +"\",\"client_secret\":\""+CLIENT_SECRET_TEST+"\",\"audience\":\"blog\",\"grant_type\":\"client_credentials\"}"
     payload = "{\"client_id\":\"kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW\",\"client_secret\":\"EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r\",\"audience\":\"blog\",\"grant_type\":\"client_credentials\"}"
-
     headers = {'content-type': "application/json"}
 
     conn.request("POST", "/oauth/token", payload, headers)
@@ -101,7 +103,7 @@ def logout():
     session.clear()
     # Redirect user to logout endpoint
     params = {'returnTo': url_for('home', _external=True),
-              'client_id': 'kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'}
+              'client_id': CLIENT_ID}
     return render_template('logout.html',
                            userinfo=None,
                            userinfo_pretty=None, indent=4)
@@ -129,11 +131,11 @@ oauth = OAuth(app)
 
 auth0 = oauth.register(
     'auth0',
-    client_id='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW',
-    client_secret='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r',
-    api_base_url='https://coffestack.us.auth0.com',
-    access_token_url='https://coffestack.us.auth0.com/oauth/token',
-    authorize_url='https://coffestack.us.auth0.com/authorize',
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    api_base_url=API_BASE_URL,
+    access_token_url=API_BASE_URL+'/oauth/token',
+    authorize_url=API_BASE_URL+'/authorize',
     client_kwargs={
         'scope': 'openid profile email',
     },
@@ -221,11 +223,13 @@ def get_author_id():
  
 
 #################### api with bear token  with method requires_auth #####################
-################################## need to write test ################################### 
-@app.route('/api/author/<int:author_id>/', methods=['GET'])
+################################## need to write test ###################################
+
+@app.route('/api/author/<int:author_id>/', methods=['GET','POST'])
+@requires_auth('') 
 @cross_origin(headers=["Content-Type", "Authorization"])
 @cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
-@requires_auth('GET:posts')
+
 def api_get_all_posts_from_author(author_id):
     try:
         posts = Post.query.filter_by(author_id=author_id).all()
@@ -328,37 +332,37 @@ def update_post(post_id):
 
 
 #Patch all Guest author's posts with author_id specified below
-@app.route('/patch-guest-author', methods=['PATCH'])
-@requires_auth()
-def patch_post(author_id):
-    guest = Guest()
-    post=Post.query.filter_by(author_id=guest.id).all()
+# @app.route('/patch-guest-author', methods=['PATCH'])
+# @requires_auth()
+# def patch_post(author_id):
+#     guest = Guest()
+#     post=Post.query.filter_by(author_id=guest.id).all()
     
-    if post is None:
-        return Response("There is no post under Guest author")
+#     if post is None:
+#         return Response("There is no post under Guest author")
 
-    body = request.get_json()
+#     body = request.get_json()
 
-    try:
-        if 'author_id' in body:
-            author_id = body.get('author_id')
+#     try:
+#         if 'author_id' in body:
+#             author_id = body.get('author_id')
 
-            #validate if the author does exist in db
-            author = Author.query.get(author_id)
+#             #validate if the author does exist in db
+#             author = Author.query.get(author_id)
 
-            if author is not None:
-                post.author_id = author_id
-                post.update()
-                return jsonify({
-                    'success': True,
-                })
-            else:
-                #author does not exit in the db
-                abort(400)           
+#             if author is not None:
+#                 post.author_id = author_id
+#                 post.update()
+#                 return jsonify({
+#                     'success': True,
+#                 })
+#             else:
+#                 #author does not exit in the db
+#                 abort(400)           
 
-    except: 
-        #author does not exit in body, malformed request
-        abort(400)
+#     except: 
+#         #author does not exit in body, malformed request
+#         abort(400)
 
 
 # @app.route('/post/<int:post_id>/delete', methods=['POST'])

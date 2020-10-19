@@ -7,6 +7,11 @@ from urllib.request import urlopen
 AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
+CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
+CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
+API_BASE_URL='https://' + AUTH0_DOMAIN
+CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW"
+CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r"
 
 
 class AuthError(Exception):
@@ -72,7 +77,8 @@ def check_permissions(permission, payload):
     """
     Ensures that permission exists in payload
     """
-
+    print('----check payload in permissions')
+    print(payload)
     # Ensures that there is permissions field in the payload
     if 'permissions' not in payload:
         raise AuthError({
@@ -80,6 +86,8 @@ def check_permissions(permission, payload):
             'description': 'Permissions not included in JWT.'
         }, 400)
 
+    if permission == '': #default to access all posts
+        return True
     # Ensures that the specific permission exists
     if permission not in payload['permissions']:
         raise AuthError({
@@ -159,6 +167,12 @@ def verify_decode_jwt(token):
 #use when POST from postman with curl
 #this method requires front end to send Beaerer token to the endpoint
 #Reference: https://gomakethings.com/using-oauth-with-fetch-in-vanilla-js/
+
+
+#test bearer token:
+"""
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ilo4YzA4cG1WdVZMTDlGUXlocWUtdiJ9.eyJpc3MiOiJodHRwczovL2NvZmZlc3RhY2sudXMuYXV0aDAuY29tLyIsInN1YiI6IktvSkszWkFOREJVbzNNcVE4OWt1SkRpaEh5b3JXTUhHQGNsaWVudHMiLCJhdWQiOiJibG9nIiwiaWF0IjoxNjAzMDk0OTg2LCJleHAiOjE2MDMxODEzODYsImF6cCI6IktvSkszWkFOREJVbzNNcVE4OWt1SkRpaEh5b3JXTUhHIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.iCmnI1RChSdCY1nr-vv6OFT36XdNZpLTz3nvbp5FSo0W9tLh5JFiwzoNEPoITP8bzigDT0hPqSkmYmlYddZzGDw0XaqKBVate3HKMHqf5Dtn8N12K-m6J8ZmougIKUj2qTwT2SjC_NERV4vQ-5LIR9ftO0fJy2URjw0gHXY0AuLml3KpJz8Y978lxhm2yZI2JqPFbGCyiG1qq-VfzEP9TIJJPJPn0JGin8mmiqERG5r88FTfCo2F0ajyRNejWDKg-9ZqSFrZrJIi2FXptflnwhwZgrSOCbDKQriWF966OZEqfxAopgRcTaCccDv9bV_rDD9pPpyQl7aFnXEJwhCK7Q
+"""
 def requires_auth(permission=''):
     '''
     authhentication decorator function
@@ -169,7 +183,7 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            return f(*args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
