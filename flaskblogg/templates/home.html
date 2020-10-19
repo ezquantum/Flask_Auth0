@@ -3,13 +3,15 @@
 
   <div class="media-body">
     <div class="article-metadata">
-      <a class="mr-2" href="{{ url_for('dashboard', user_id=post.author.id or -1) }}">{{ post.author.username }}</a>
+      <a class="mr-2" href="{{ url_for('dashboard', author_id=post.author.id or -1) }}">{{ post.author.username }}</a>
       <small class="text-muted"
         >{{ post.date_posted.strftime('%Y-%m-%d') }}</small
       >
     </div>
-    <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
+    <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+      <span class="right editor" onclick="goToEditor('{{url_for('post', post_id=post.id)}}')">✎</span></h2>
     <p class="article-content">{{ post.content }}</p>
+
   </div>
 </article>
 {% endfor %} {% endblock content %}

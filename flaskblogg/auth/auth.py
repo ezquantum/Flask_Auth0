@@ -4,7 +4,7 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-AUTH0_DOMAIN = 'coffeestack.us.auth0.com'
+AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
 
@@ -97,7 +97,7 @@ def verify_decode_jwt(token):
     '''
 
     # process key and header data
-    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json') 
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
 
@@ -178,7 +178,7 @@ def requires_auth(permission=''):
 #use when user logged in, and we store his/her permission in session
 #this method requires no front end Bearer token because we use session instead
 #Reference: https://community.auth0.com/t/storing-a-users-permissions-when-they-login/36398
-def require_auth_from_session():
+def requires_auth_from_session():
     '''
     check session
     '''

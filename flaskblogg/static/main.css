@@ -7,7 +7,15 @@ body {
   h1, h2, h3, h4, h5, h6 {
     color: #444444;
   }
-  
+  .right {
+    float: right;
+    width: 40px;
+    text-align: center;
+  }
+  .right:hover {
+    color: #eccca9;
+    cursor: pointer;
+  }
   .bg-steel {
     background-color: #5f788a;
   }

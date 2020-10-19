@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flaskblogg import app
+
 ###################
 # database_name = "blogatog"
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +18,7 @@ def setup_db(app):
 
 
 def db_drop_and_create_all():
+    
     db.drop_all()
     db.create_all()
 
@@ -31,7 +33,7 @@ def Guest():
 
     
 
-class User(db.Model):
+class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=True)
@@ -43,7 +45,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}', '{self.id}')"
+        return f"Author('{self.username}', '{self.email}', '{self.image_file}', '{self.id}')"
 
     def insert(self):
         db.session.add(self)
@@ -63,7 +65,7 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=True,
                             default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=True)
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
@@ -79,4 +81,4 @@ class Post(db.Model):
         db.session.delete(self)
         db.session.commit()
  
-db.create_all()
+db_drop_and_create_all()
