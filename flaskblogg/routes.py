@@ -78,22 +78,6 @@ def register():
 
 @app.route('/login')
 def login():
-    # # redirect_uri = url_for('authorize', _external=True)
-    ###########test to get bearer token###########
-    import http.client
-    print('------------------------test------------------------')
-    conn = http.client.HTTPSConnection("coffestack.us.auth0.com")
-
-    #payload = "{\"client_id\":\""+CLIENT_ID_TEST +"\",\"client_secret\":\""+CLIENT_SECRET_TEST+"\",\"audience\":\"blog\",\"grant_type\":\"client_credentials\"}"
-    payload = "{\"client_id\":\"kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW\",\"client_secret\":\"EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r\",\"audience\":\"blog\",\"grant_type\":\"client_credentials\"}"
-    headers = {'content-type': "application/json"}
-
-    conn.request("POST", "/oauth/token", payload, headers)
-
-    res = conn.getresponse()
-    data = res.read()
-
-    print(data.decode("utf-8"))
     return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
 
 
@@ -191,12 +175,6 @@ def callback_handling():
         db.session.commit()          
 
     else:  # user previously logged in before and created record before, we fetch that 
-        #test
-        print('--------author--------')
-        print(author)
-        print('--------author.id--------')
-        print(author.id)
-        
         #modify the user.last_lgoin_date with the datetime.datetime.now()
         author.last_lgoin_date = datetime.datetime.now()
         author.update()            
