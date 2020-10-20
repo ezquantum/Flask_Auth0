@@ -31,7 +31,8 @@ def after_request(response):
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
+    page=request.args.get('page', 1, type=int)
+    posts = Post.query.paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts)
 
 
@@ -148,7 +149,7 @@ def callback_handling():
         'picture': userinfo['picture'],
         #'permission':'EDITOR' #default permission, need to change this later
     }
-    print('session')
+    print('sessionsessionsessionsessionsessionsessionsessionsessionsession')
     print(session)
 
     #what's missing if we persist user obj (we don't need to do it now)
@@ -176,7 +177,7 @@ def callback_handling():
 
     else:  # user previously logged in before and created record before, we fetch that 
         #modify the user.last_lgoin_date with the datetime.datetime.now()
-        author.last_lgoin_date = datetime.datetime.now()
+        author.last_login_date = datetime.datetime.now()
         author.update()            
     return redirect('/')
 
@@ -216,10 +217,31 @@ def api_get_all_posts_from_author(author_id):
         return jsonify({
             'success': True, 
             'author_id':author_id,
-            'posts': posts_list,
+            'posts': posts_list
         }), 200
     except:
         abort(500) 
+
+@app.route('/api/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@requires_auth('')
+def delete_post(post_id):
+
+    author = get_author_id()
+    post = Post.query.filter_by(id=post_id).one_or_none()
+    
+    if post is None:
+        return Response("There is no such post under author")
+
+    try:
+        post.delete()
+
+        return jsonify({
+            'success': True,
+            'deleted': post_id
+            }), 200
+    except:
+        abort(422)
+
 
 ################# end api with bear token  with method requires_auth ################## 
 
@@ -358,25 +380,28 @@ def update_post(post_id):
 #     return redirect(url_for('home'))
 
 
-@app.route('/post/<int:post_id>/delete', methods=['GET'])
-@requires_auth()
-def delete_post(jwt, post_id):
+@app.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@requires_auth_from_session()
+def delete_post(post_id):
 
-    author = get_author_id()
-    post = Post.query.filter_by(id=post_id).one_or_none()
-    
+    post = Post.query.get_or_404(post_id)
+    author_id = get_author_id()
+
     if post is None:
-        return Response("There is no such post under author")
+        abort(403)
 
-    try:
-        post.delete()
+    if post.author_id !=  author_id:
+        abort(403)
+        # title = request.form['title']
+        # content = request.form['content']
 
-        return jsonify({
-            'success': True,
-            'deleted': post_id
-            })
-    except:
-        abort(422)
+        #find author by session
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your Post Has Been Deleted!', 'danger')
+    return redirect(url_for('home'))
+
+
 
 
 

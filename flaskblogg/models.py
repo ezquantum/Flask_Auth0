@@ -81,4 +81,4 @@ class Post(db.Model):
         db.session.delete(self)
         db.session.commit()
  
-db_drop_and_create_all()
+# db_drop_and_create_all()
