@@ -18,7 +18,6 @@ def setup_db(app):
 
 
 def db_drop_and_create_all():
-    
     db.drop_all()
     db.create_all()
 
@@ -81,4 +80,4 @@ class Post(db.Model):
         db.session.delete(self)
         db.session.commit()
  
-create_all()
+db.create_all()
