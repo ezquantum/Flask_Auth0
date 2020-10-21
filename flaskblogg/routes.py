@@ -148,7 +148,6 @@ def callback_handling():
         'picture': userinfo['picture'],
         #'permission':'EDITOR' #default permission, need to change this later
     }
-    print('sessionsessionsessionsessionsessionsessionsessionsessionsession')
     print(session)
 
     #what's missing if we persist user obj (we don't need to do it now)
@@ -206,7 +205,8 @@ def get_author_id():
 @app.route('/api/author/<int:author_id>/', methods=['GET','POST'])
 @requires_auth('') 
 @cross_origin(headers=["Content-Type", "Authorization"])
-@cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
+@cross_origin(headers=["Access-Control-Allow-Origin", "https://sqt594.herokuapp.com"])
+# @cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
 
 def api_get_all_posts_from_author(author_id):
     try:
