@@ -77,7 +77,8 @@ def register():
 
 @app.route('/login')
 def login():
-    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
+    return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')
+    # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
 
 
 @app.route('/logout')
