@@ -224,7 +224,7 @@ def api_get_all_posts_from_author(author_id):
 
 @app.route('/api/post/<int:post_id>/delete', methods=['GET', 'POST'])
 @requires_auth('')
-def delete_post(post_id):
+def api_delete_post(post_id):
 
     author = get_author_id()
     post = Post.query.filter_by(id=post_id).one_or_none()
