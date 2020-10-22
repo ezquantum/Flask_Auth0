@@ -17,104 +17,114 @@ CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW"
 CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
 
 
-class AuthError(Exception):
-    """AuthError Exception
-    A standardized way to communicate auth failure modes
-    """
+# AuthError Exception
+'''
+AuthError Exception
+A standardized way to communicate auth failure modes
+'''
 
+
+class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
 
 
-# Authorization Header
+# Auth Header
+
+'''
+@TODO implement get_token_auth_header() method
+    it should attempt to get the header from the request
+        it should raise an AuthError if no header is present
+    it should attempt to split bearer and the token
+        it should raise an AuthError if the header is malformed
+    return the token part of the header
+'''
+
+
 def get_token_auth_header():
-    """
-    Obtains the Access Token from the Authorization Header
-    """
-
-    # get auth from the header
-
-    # session['profile'] = {
-    #     'user_id': userinfo['sub'],
-    #     'name': userinfo['name'],
-    #     'picture': userinfo['picture']
-    # }
-    auth = request.headers.get('Authorization', None)
-    if not auth:
+    if 'Authorization' not in request.headers:
         raise AuthError({
-            'code': 'authorization_header_missing',
-            'description': 'Authorization header is expected.'
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
         }, 401)
 
-    # split keyword and token
-    parts = auth.split()
+    auth_header = request.headers['Authorization']
+    header_parts = auth_header.split(' ')
 
-    # Verify bearer is there
-    if parts[0].lower() != 'bearer':
+    if len(header_parts) != 2:
         raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must begin with "Bearer".'
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
+        }, 401)
+    elif header_parts[0].lower() != 'bearer':
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
         }, 401)
 
-    # auth header MUST be two parts
-    elif len(parts) == 1:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Token not found.'
-        }, 401)
+    return header_parts[1]
 
-    # auth header must have 2 parts
-    elif len(parts) > 2:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must be bearer token.'
-        }, 401)
 
-    # get token from parts and return
-    token = parts[1]
-    return token
+'''
+@TODO implement check_permissions(permission, payload) method
+    @INPUTS
+        permission: string permission (i.e. 'post:drink')
+        payload: decoded jwt payload
+
+    it should raise an AuthError if permissions are not included in the payload
+        !!NOTE check your RBAC settings in Auth0
+    it should raise an AuthError if the requested permission string is 
+    not in the payload permissions array
+    return true otherwise
+'''
 
 
 def check_permissions(permission, payload):
-    """
-    Ensures that permission exists in payload
-    """
-    print('----check payload in permissions')
-    print(payload)
-    # Ensures that there is permissions field in the payload
     if 'permissions' not in payload:
         raise AuthError({
             'code': 'invalid_claims',
             'description': 'Permissions not included in JWT.'
         }, 400)
 
-    if permission == '': #default to access all posts
-        return True
-    # Ensures that the specific permission exists
     if permission not in payload['permissions']:
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
         }, 401)
-
-    # if conditions pass return true
     return True
 
 
-def verify_decode_jwt(token):
-    '''
-    Verifies and decodes the jwt from the given token
-    '''
+'''
+@TODO implement verify_decode_jwt(token) method
+    @INPUTS
+        token: a json web token (string)
 
-    # process key and header data
-    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json') 
+    it should be an Auth0 token with key id (kid)
+    it should verify the token using Auth0
+    /.well-known/jwks.json
+    it should decode the payload from the token
+    it should validate the claims
+    return the decoded payload
+
+    !!NOTE urlopen has a common certificate error
+    described here: https://stackoverflow.com
+    /questions/50236117
+    /scraping-ssl-certificate-verify
+    -failed-error-for-http-en-wikipedia-org
+'''
+
+
+def verify_decode_jwt(token):
+    # GET THE PUBLIC KEY FROM AUTH0
+    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
+
+    # GET THE DATA IN THE HEADER
     unverified_header = jwt.get_unverified_header(token)
 
+    # CHOOSE OUR KEY
     rsa_key = {}
-
-    # Ensure that token header has the kid field
     if 'kid' not in unverified_header:
         raise AuthError({
             'code': 'invalid_header',
@@ -132,7 +142,7 @@ def verify_decode_jwt(token):
             }
     if rsa_key:
         try:
-            # decode token with constant
+            # USE THE KEY TO VALIDATE THE JWT
             payload = jwt.decode(
                 token,
                 rsa_key,
@@ -143,7 +153,6 @@ def verify_decode_jwt(token):
 
             return payload
 
-        # raise errors where needed
         except jwt.ExpiredSignatureError:
             raise AuthError({
                 'code': 'token_expired',
@@ -153,8 +162,8 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, ' +
-                'check the audience and issuer.'
+                'description': 'Incorrect claims. Please, check'
+                        + ' the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
@@ -167,49 +176,35 @@ def verify_decode_jwt(token):
     }, 400)
 
 
-#use when POST from postman with curl
-#this method requires front end to send Beaerer token to the endpoint
-#Reference: https://gomakethings.com/using-oauth-with-fetch-in-vanilla-js/
+'''
+@TODO implement @requires_auth(permission) decorator method
+    @INPUTS
+        permission: string permission (i.e. 'post:drink')
+
+    it should use the get_token_auth_header method to get the token
+    it should use the verify_decode_jwt method to decode the jwt
+    it should use the check_permissions method validate claims and check the
+    requested permission
+    return the decorator which passes the decoded payload to the decorated
+    method
+'''
 
 
-#test bearer token:
-"""
-eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ilo4YzA4cG1WdVZMTDlGUXlocWUtdiJ9.eyJpc3MiOiJodHRwczovL2NvZmZlc3RhY2sudXMuYXV0aDAuY29tLyIsInN1YiI6IktvSkszWkFOREJVbzNNcVE4OWt1SkRpaEh5b3JXTUhHQGNsaWVudHMiLCJhdWQiOiJibG9nIiwiaWF0IjoxNjAzMDk0OTg2LCJleHAiOjE2MDMxODEzODYsImF6cCI6IktvSkszWkFOREJVbzNNcVE4OWt1SkRpaEh5b3JXTUhHIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.iCmnI1RChSdCY1nr-vv6OFT36XdNZpLTz3nvbp5FSo0W9tLh5JFiwzoNEPoITP8bzigDT0hPqSkmYmlYddZzGDw0XaqKBVate3HKMHqf5Dtn8N12K-m6J8ZmougIKUj2qTwT2SjC_NERV4vQ-5LIR9ftO0fJy2URjw0gHXY0AuLml3KpJz8Y978lxhm2yZI2JqPFbGCyiG1qq-VfzEP9TIJJPJPn0JGin8mmiqERG5r88FTfCo2F0ajyRNejWDKg-9ZqSFrZrJIi2FXptflnwhwZgrSOCbDKQriWF966OZEqfxAopgRcTaCccDv9bV_rDD9pPpyQl7aFnXEJwhCK7Q
-"""
 def requires_auth(permission=''):
-    '''
-    authhentication decorator function
-    '''
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-            payload = verify_decode_jwt(token)
+            try:
+                payload = verify_decode_jwt(token)
+            except Exception:
+                raise AuthError({
+                    'code': 'unauthorized',
+                    'description': 'Permission not found.'
+                }, 401)
+
             check_permissions(permission, payload)
-            return f(*args, **kwargs)
-
-        return wrapper
-    return requires_auth_decorator
-
-
-#use when user logged in, and we store his/her permission in session
-#this method requires no front end Bearer token because we use session instead
-#Reference: https://community.auth0.com/t/storing-a-users-permissions-when-they-login/36398
-def requires_auth_from_session():
-    '''
-    check session
-    '''
-    from flask import session, Response
-    def requires_auth_decorator(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            # Check to see if it's in their session
-            if session is None or 'profile' not in session:
-                # If it isn't return our access denied message (you can also return a redirect or render_template)
-                return Response("Access denied, please login first")
-
-            # Otherwise just send them where they wanted to go
-            return f(*args, **kwargs)
+            return f(payload, *args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
