@@ -221,27 +221,6 @@ def api_get_all_posts_from_author(author_id):
     except:
         abort(422) 
 
-@app.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
-@requires_auth_from_session()
-def delete_post(post_id):
-
-    post = Post.query.get_or_404(post_id)
-    author_id = get_author_id()
-
-    if post is None:
-        abort(403)
-
-    if post.author_id !=  author_id:
-        abort(403)
-        # title = request.form['title']
-        # content = request.form['content']
-
-        #find author by session
-    db.session.delete(post)
-    db.session.commit()
-    flash('Your Post Has Been Deleted!', 'danger')
-    return redirect(url_for('home'))
-
 
 
 ################# end api with bear token  with method requires_auth ################## 
@@ -364,21 +343,6 @@ def update_post(post_id):
 #     except: 
 #         #author does not exit in body, malformed request
 #         abort(400)
-
-
-# @app.route('/post/<int:post_id>/delete', methods=['POST'])
-# @requires_auth_from_session()
-# def delete_post(post_id):
-#     post=Post.query.get_or_404(post_id)
-#     author_id = get_author_id()
-#     if post is None:
-#         abort(403)
-#     if post.author_id !=  author_id:
-#         abort(403)
-#     db.session.delete(post)
-#     db.session.commit()
-#     flash('Your Post Has Been deleted!', 'success')
-#     return redirect(url_for('home'))
 
 
 @app.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
