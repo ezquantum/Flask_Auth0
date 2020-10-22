@@ -203,7 +203,7 @@ def get_author_id():
 ################################## need to write test ###################################
 
 @app.route('/api/author/<int:author_id>/', methods=['GET','POST'])
-@requires_auth('') 
+@requires_auth('patch:post') 
 @cross_origin(headers=["Content-Type", "Authorization"])
 @cross_origin(headers=["Access-Control-Allow-Origin", "https://sqt594.herokuapp.com"])
 # @cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
@@ -219,10 +219,10 @@ def api_get_all_posts_from_author(author_id):
             'posts': posts_list
         }), 200
     except:
-        abort(500) 
+        abort(422) 
 
-@app.route('/api/post/<int:post_id>/delete', methods=['GET', 'POST'])
-@requires_auth('')
+@app.route('/api/post/<int:post_id>/delete', methods=['DELETE'])
+@requires_auth('delete:post')
 def api_delete_post(post_id):
 
     author = get_author_id()
