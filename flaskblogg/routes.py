@@ -26,6 +26,8 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
+# Paginates posts above five per page
+# Reveals all posts
 @app.route("/")
 @app.route("/home")
 def home():
@@ -33,7 +35,7 @@ def home():
     posts = Post.query.paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts)
 
-
+# General about page
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
@@ -75,12 +77,14 @@ def register():
 #             flash('Login Unsuccessful. Please check username and password', 'danger')
 #     return render_template('login.html', title='Login', form=form)
 
+
+# Auth0 redirect 
 @app.route('/login')
 def login():
     return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')
     # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
 
-
+# clears session and adds redirect
 @app.route('/logout')
 def logout():
     # Clear session stored data
@@ -202,13 +206,14 @@ def get_author_id():
 #################### api with bear token  with method requires_auth #####################
 ################################## need to write test ###################################
 
-@app.route('/api/author/<int:author_id>/', methods=['GET','POST'])
+# # # api demo endpoints
+@app.route('/api/author/<int:author_id>/', methods=['GET','POST','PATCH'])
 @requires_auth('patch:api') 
 @cross_origin(headers=["Content-Type", "Authorization"])
 @cross_origin(headers=["Access-Control-Allow-Origin", "https://sqt594.herokuapp.com"])
 # @cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
 
-def api_get_all_posts_from_author(author_id):
+def api_get_all_posts_from_author(jwt, author_id):
     try:
         posts = Post.query.filter_by(author_id=author_id).all()
         posts_list = [str(post.title) for post in posts]
@@ -220,6 +225,27 @@ def api_get_all_posts_from_author(author_id):
         }), 200
     except:
         abort(422) 
+# # # demo endpoint
+@app.route('/api/post/<int:post_id>/delete', methods=['delete'])
+@requires_auth('delete:api')
+def delete_api(jwt, post_id):
+
+    post = Post.query.get_or_404(post_id)
+    author_id = get_author_id()
+
+    if post is None:
+        abort(403)
+
+    if post.author_id !=  author_id:
+        abort(403)
+        # title = request.form['title']
+        # content = request.form['content']
+
+        #find author by session
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your Post Has Been Deleted!', 'danger')
+    return redirect(url_for('home'))
 
 
 
@@ -256,12 +282,13 @@ def get_all_posts(token):
     except:
         abort(500)
 
+# # # uses session to allow post
 @app.route('/post/new', methods=['GET', 'POST'])
 @requires_auth_from_session()
 def new_post():
     form = PostForm()
     author_id = get_author_id()
- 
+    # guest id
     if author_id == -1:
         return redirect(url_for('login'))
 
@@ -278,14 +305,14 @@ def new_post():
 
     return render_template('create_post.html', title='New Post', form=form, legend='New Post', userinfo=session['profile'])
 
-
+# retrieve post by id: on clickable
 @app.route('/post/<int:post_id>', methods=['GET'])
 @requires_auth_from_session()
 def post(post_id):
     post=Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
-
+# # # Updates post
 @app.route('/post/<int:post_id>/update', methods=['GET','POST'])
 @requires_auth_from_session()
 def update_post(post_id):
@@ -343,6 +370,21 @@ def update_post(post_id):
 #     except: 
 #         #author does not exit in body, malformed request
 #         abort(400)
+
+
+# @app.route('/post/<int:post_id>/delete', methods=['POST'])
+# @requires_auth_from_session()
+# def delete_post(post_id):
+#     post=Post.query.get_or_404(post_id)
+#     author_id = get_author_id()
+#     if post is None:
+#         abort(403)
+#     if post.author_id !=  author_id:
+#         abort(403)
+#     db.session.delete(post)
+#     db.session.commit()
+#     flash('Your Post Has Been deleted!', 'success')
+#     return redirect(url_for('home'))
 
 
 @app.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])

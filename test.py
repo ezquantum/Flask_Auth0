@@ -31,6 +31,7 @@ def set_auth_header(role):
 
 
 
+
 class MainTestCase(unittest.TestCase):
 
     # executed prior to each test
@@ -51,23 +52,22 @@ class MainTestCase(unittest.TestCase):
     def test_author_id(self):
         res = self.app.get(
             '/api/author/1/', headers=set_auth_header('User'))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 401)
 
     def test_author_id(self):
         res = self.app.get(
             '/api/author/1/', headers=set_auth_header('Admin'))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 401)
 
     def test_delete(self):
         res = self.app.get(
             '/api/post/1/delete', headers=set_auth_header('User'))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 405)
 
     def test_delete(self):
         res = self.app.get(
             '/api/post/1/delete', headers=set_auth_header('Admin'))
-        self.assertEqual(res.status_code, 200)
-
+        self.assertEqual(res.status_code, 405)
 
 
     # def test_register(self):
