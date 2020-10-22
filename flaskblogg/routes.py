@@ -226,7 +226,7 @@ def api_get_all_posts_from_author(jwt, author_id):
     except:
         abort(422) 
 # # # demo endpoint
-@app.route('/api/post/<int:post_id>/delete', methods=['delete'])
+@app.route('/api/post/<int:post_id>/remove', methods=['delete'])
 @requires_auth('delete:api')
 def delete_api(jwt, post_id):
 
@@ -387,7 +387,7 @@ def update_post(post_id):
 #     return redirect(url_for('home'))
 
 
-@app.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@app.route('/post/<int:post_id>/remove', methods=['GET', 'POST'])
 @requires_auth_from_session()
 def delete_post(post_id):
 

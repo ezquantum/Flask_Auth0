@@ -5,17 +5,16 @@ from jose import jwt
 from urllib.request import urlopen
 
 #web application for blog
-AUTH0_DOMAIN = 'coffestack.us.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'blog'
-CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
-CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+ALGORITHMS = os.getenv('ALGORITHMS')
+API_AUDIENCE = os.getenv('API_AUDIENCE')
+CLIENT_ID= os.getenv('CLIENT_ID')
+CLIENT_SECRET= os.getenv('CLIENT_SECRET')
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
-CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
-CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
-
+CLIENT_ID_TEST = os.getenv('CLIENT_ID_TEST')
+CLIENT_SECRET_TEST = os.getenv('CLIENT_SECRET_TEST')
 
 # AuthError Exception
 '''

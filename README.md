@@ -35,7 +35,7 @@ This will install all of the required packages we selected within the `requireme
 To run the server, execute:
 
 ```
-export FLASK_APP=api.py
+export FLASK_APP=run.py
 export FLASK_ENV=debug
 flask run --reload
 ```
@@ -74,7 +74,7 @@ API== Testable endpoint only
 
 GET | post | author | all-posts | API
 POST| post | author             | API
-PATCH| post|                    | API
+PATCH|post|                     | API
 DELETE|post                     | API
 
 

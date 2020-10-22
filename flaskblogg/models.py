@@ -9,7 +9,7 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 # database_path = "postgres://{}/{}".format('localhost:5432', database_name)
 db = SQLAlchemy(app)
 
-
+#localhost variable not hidden
 def setup_db(app):
     app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres://Amajimoda@localhost:5432/blogatog'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
