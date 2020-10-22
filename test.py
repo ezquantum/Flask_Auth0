@@ -16,7 +16,7 @@ from flaskblogg.models import db, Author, Post
 
 # database_filename = 'site.db'
 # project_dir = os.path.dirname(os.path.abspath(__file__))
-database_path='postgres://Amajimoda@localhost:5432/blogatog'
+database_path='    postgres://epixojdhlwjsir:99617ba473d3f6609a9c93439e87bb31fb1ac9fa6d5d167e66e2e29d703261f0@ec2-52-71-153-228.compute-1.amazonaws.com:5432/d93kgv3fnkj0fg'
 User = os.getenv('User')
 Admin = os.getenv('Admin')
 
@@ -58,15 +58,15 @@ class MainTestCase(unittest.TestCase):
             '/api/author/1/', headers=set_auth_header('Admin'))
         self.assertEqual(res.status_code, 200)
 
-    # def test_delete(self):
-    #     res = self.app.get(
-    #         '/api/post/<int:post_id>/delete', headers=set_auth_header('User'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_delete(self):
+        res = self.app.get(
+            '/api/post/1/delete', headers=set_auth_header('User'))
+        self.assertEqual(res.status_code, 200)
 
-    # def test_delete(self):
-    #     res = self.app.get(
-    #         '/api/post/<int:post_id>/delete', headers=set_auth_header('Admin'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_delete(self):
+        res = self.app.get(
+            '/api/post/1/delete', headers=set_auth_header('Admin'))
+        self.assertEqual(res.status_code, 200)
 
 
 
