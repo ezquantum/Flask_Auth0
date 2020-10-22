@@ -208,3 +208,23 @@ def requires_auth(permission=''):
 
         return wrapper
     return requires_auth_decorator
+
+
+def requires_auth_from_session():
+    '''
+    check session
+    '''
+    from flask import session, Response
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            # Check to see if it's in their session
+            if session is None or 'profile' not in session:
+                # If it isn't return our access denied message (you can also return a redirect or render_template)
+                return Response("Access denied, please login first")
+
+            # Otherwise just send them where they wanted to go
+            return f(*args, **kwargs)
+
+        return wrapper
+    return requires_auth_decorator
