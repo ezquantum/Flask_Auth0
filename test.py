@@ -48,7 +48,7 @@ class MainTestCase(unittest.TestCase):
 
     def test_author_id(self):
         res = self.app.get(
-            '/api/author/1/', headers=set_auth_header('Admin'))
+            '/api/author/2/', headers=set_auth_header('Admin'))
         self.assertEqual(res.status_code, 401)
 
     def test_delete(self):
@@ -58,35 +58,68 @@ class MainTestCase(unittest.TestCase):
 
     def test_delete(self):
         res = self.app.get(
-            '/api/post/1/remove', headers=set_auth_header('Admin'))
+            '/api/post/2/remove', headers=set_auth_header('Admin'))
         self.assertEqual(res.status_code, 405)
 
+    def test_register(self):
+        res = self.app.get(
+            '/register', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_register(self):
+        res = self.app.get(
+            '/register', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
-    # def test_register(self):
-    #     res = self.app.get(
-    #         '/register', headers=set_auth_header('User'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_dashboard(self):
+        res = self.app.get(
+            '/dashboard', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
-    # def test_register(self):
-    #     res = self.app.get(
-    #         '/register', headers=set_auth_header('Admin'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_dashboard(self):
+        res = self.app.get(
+            '/dashboard', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_allposts(self):
+        res = self.app.get(
+            '/all-posts', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
-    # def test_dashboard(self):
-    #     res = self.app.get(
-    #         '/dashboard', headers=set_auth_header('User'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_allposts(self):
+        res = self.app.get(
+            '/all-posts', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
-    # def test_dashboard(self):
-    #     res = self.app.get(
-    #         '/dashboard', headers=set_auth_header('Admin'))
-    #     self.assertEqual(res.status_code, 200)
+    def test_new(self):
+        res = self.app.get(
+            '/post/new', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_new(self):
+        res = self.app.get(
+            '/post/new', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_post1(self):
+        res = self.app.get(
+            '/post/1', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_post1(self):
+        res = self.app.get(
+            '/post/1', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
 
+    def test_post1remove(self):
+        res = self.app.get(
+            '/post/1/remove', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)
+
+    def test_post1remove(self):
+        res = self.app.get(
+            '/post/1/remove', headers=set_auth_header('session'))
+        self.assertEqual(res.status_code, 200)    
     # def test_get_movies_unauthorized(self):
     #     res = self.app.get(
     #         '/movies', headers=set_auth_header(''))
