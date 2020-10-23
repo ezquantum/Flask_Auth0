@@ -6,12 +6,12 @@ from jose import jwt
 from urllib.request import urlopen
 
 #web application for blog
-app.config['AUTH0_DOMAIN'] = os.getenv('AUTH0_DOMAIN')
-app.config['ALGORITHMS'] = ['RS256']
-app.config['API_AUDIENCE'] = os.getenv('API_AUDIENCE')
-app.config['CLIENT_ID']= os.getenv('CLIENT_ID')
-app.config['CLIENT_SECRET']= os.getenv('CLIENT_SECRET')
-app.config['API_BASE_URL']='https://' + AUTH0_DOMAIN
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+ALGORITHMS = ['RS256']
+API_AUDIENCE = os.getenv('API_AUDIENCE')
+CLIENT_ID= os.getenv('CLIENT_ID')
+CLIENT_SECRET= os.getenv('CLIENT_SECRET')
+API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
 app.config['CLIENT_ID_TEST'] = os.getenv('CLIENT_ID_TEST')
