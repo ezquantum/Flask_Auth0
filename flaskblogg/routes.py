@@ -16,7 +16,7 @@ from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
 from .auth.auth import AuthError, requires_auth_from_session, requires_auth, CLIENT_ID, CLIENT_SECRET, CLIENT_ID_TEST, CLIENT_SECRET_TEST, API_BASE_URL, AUTH0_DOMAIN, API_AUDIENCE
-from boto.s3.connection import S3Connection
+# from boto.s3.connection import S3Connection
 
 
 # from flask_login import login_user

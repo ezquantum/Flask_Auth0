@@ -10,6 +10,7 @@ from boto.s3.connection import S3Connection
 ##BLOCK
 # web application for blog
 AUTH0_DOMAIN = 'coffestack.us.auth0.com'
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
 CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
