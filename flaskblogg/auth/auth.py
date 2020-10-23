@@ -15,7 +15,7 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = os.environ.get('API_AUDIENCE')
 CLIENT_ID=os.environ.get('CLIENT_ID')
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
-API_BASE_URL='https://' + os.environ["AUTH0_DOMAIN"]
+API_BASE_URL='https://' + AUTH0_DOMAIN
 
 oauth = OAuth(app)
 
