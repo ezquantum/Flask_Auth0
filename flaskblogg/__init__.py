@@ -5,9 +5,7 @@ from flask_bcrypt import Bcrypt
 from boto.s3.connection import S3Connection
 # from flask_login import LoginManager
 
-s3 = S3Connection(os.environ['SECRET_KEY'], os.environ['DATABASE_URL'], os.environ['AUTH0_DOMAIN'], os.environ['API_AUDIENCE'], 
-    os.environ['CLIENT_ID'], os.environ['CLIENT_SECRET'], os.environ['CLIENT_ID_TEST'], 
-    os.environ['CLIENT_SECRET_TEST'])
+s3 = S3Connection(os.environ['SECRET_KEY'], os.environ['DATABASE_URL'])
 # this app is imported
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245' #yes it's a dummy site... it's fine
