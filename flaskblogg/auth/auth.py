@@ -6,27 +6,19 @@ from jose import jwt
 from urllib.request import urlopen
 from boto.s3.connection import S3Connection
 
-# s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
-AUTH0_DOMAIN = S3Connection(os.environ['AUTH0_DOMAIN'])
-API_AUDIENCE = S3Connection(os.environ['API_AUDIENCE'])
-CLIENT_ID = S3Connection(os.environ['CLIENT_ID'])
-CLIENT_SECRET = S3Connection(os.environ['CLIENT_SECRET'])
-# API_BASE_URL = S3Connection(os.environ['API_BASE_URL'])
-CLIENT_ID_TEST = S3Connection(os.environ['CLIENT_ID_TEST'])
-CLIENT_SECRET_TEST = S3Connection(os.environ['CLIENT_SECRET_TEST'])
 ##BLOCK
 # web application for blog
-# AUTH0_DOMAIN = 'coffestack.us.auth0.com'
+AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
-# API_AUDIENCE = 'blog'
-# CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
-# CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
+API_AUDIENCE = 'blog'
+CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
+CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
-# #machine to machine for blog (test)
-# CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
-# CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
+#machine to machine for blog (test)
+CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
+CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
 
 
 # AuthError Exception
