@@ -15,7 +15,7 @@ from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0, oauth, login_url
+from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0, oauth
 
 
 # from flask_login import login_user
