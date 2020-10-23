@@ -5,6 +5,7 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from authlib.integrations.flask_client import OAuth
+from flaskblogg import app
 
 ##BLOCK
 # web application for blog
