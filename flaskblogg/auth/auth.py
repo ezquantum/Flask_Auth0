@@ -10,26 +10,35 @@ from flaskblogg import app
 ##BLOCK
 # web application for blog
 # AUTH0_DOMAIN = 'coffestack.us.auth0.com'
-AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN', None)
+AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
 ALGORITHMS = ['RS256']
-API_AUDIENCE = os.environ.get('API_AUDIENCE', None)
-CLIENT_ID=os.environ.get('CLIENT_ID', None)
-CLIENT_SECRET=os.environ.get('CLIENT_SECRET', None)
+API_AUDIENCE = os.environ['API_AUDIENCE']
+CLIENT_ID=os.environ('CLIENT_ID')
+CLIENT_SECRET=os.environ('CLIENT_SECRET')
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
-oauth = OAuth(app)
+# https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri={REDIRECT_URI}
 
-auth0 = oauth.register(
-    'auth0',
-    client_id=AUTH0_DOMAIN,
-    client_secret=CLIENT_SECRET,
-    api_base_url=API_BASE_URL,
-    access_token_url=API_BASE_URL+'/oauth/token',
-    authorize_url=API_BASE_URL+'/authorize',
-    client_kwargs={
-        'scope': 'openid profile email',
-    },
-)
+oauth = OAuth(app)
+auth0= oauth.register()
+
+# auth0 = oauth.register(
+#     'auth0',
+#     client_id=AUTH0_DOMAIN,
+#     client_secret=CLIENT_SECRET,
+#     api_base_url=API_BASE_URL,
+#     access_token_url=API_BASE_URL+'/oauth/token',
+#     authorize_url=API_BASE_URL+'/authorize',
+#     client_kwargs={
+#         'scope': 'openid profile email',
+#     },
+# )
+'''@app.route('/login')
+def login():
+    return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')
+'''
+
+
 # AuthError Exception
 '''
 AuthError Exception
