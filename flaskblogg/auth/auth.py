@@ -8,19 +8,21 @@ from boto.s3.connection import S3Connection
 
 # s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
-s3 = S3Connection(os.environ['AUTH0_DOMAIN'], os.environ['API_AUDIENCE'])
+s3 = S3Connection(os.environ['AUTH0_DOMAIN'], os.environ['API_AUDIENCE'], 
+    os.environ['CLIENT_ID'], os.environ['CLIENT_SECRET'], os.environ['CLIENT_ID_TEST'], 
+    os.environ['CLIENT_SECRET_TEST'])
 ##BLOCK
 # web application for blog
 # AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
 # API_AUDIENCE = 'blog'
-CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
-CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
-API_BASE_URL='https://' + AUTH0_DOMAIN
+# CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
+# CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
+# API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
-CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
-CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
+# CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
+# CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
 
 
 # AuthError Exception
