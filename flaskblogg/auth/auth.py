@@ -10,7 +10,7 @@ from flaskblogg import app
 ##BLOCK
 # web application for blog
 # AUTH0_DOMAIN = 'coffestack.us.auth0.com'
-AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+# AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
 CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
@@ -25,7 +25,7 @@ oauth = OAuth(app)
 
 auth0 = oauth.register(
     'auth0',
-    client_id=AUTH0_DOMAIN,
+    client_id=os.environ["AUTH0_DOMAIN"],
     client_secret=CLIENT_SECRET,
     api_base_url=API_BASE_URL,
     access_token_url=API_BASE_URL+'/oauth/token',
