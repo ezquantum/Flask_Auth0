@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 #web application for blog
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-ALGORITHMS = os.getenv('ALGORITHMS')
+ALGORITHMS = ['RS256']
 API_AUDIENCE = os.getenv('API_AUDIENCE')
 CLIENT_ID= os.getenv('CLIENT_ID')
 CLIENT_SECRET= os.getenv('CLIENT_SECRET')
