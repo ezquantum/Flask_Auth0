@@ -15,7 +15,7 @@ from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0, oauth
+from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0, oauth, login_url
 
 
 # from flask_login import login_user
@@ -82,8 +82,11 @@ def register():
 # Auth0 redirect 
 @app.route('/login')
 def login():
-    return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')
-    # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
+
+    return redirect('login_url')
+    # return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback') This is the real one
+
+    # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback') local machine only
 
 # clears session and adds redirect
 @app.route('/logout')
