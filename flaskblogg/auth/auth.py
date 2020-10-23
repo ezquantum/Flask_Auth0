@@ -15,7 +15,7 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
 CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
 CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
-API_BASE_URL='https://' + os.environ["AUTH0_DOMAIN"]
+API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
 CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
