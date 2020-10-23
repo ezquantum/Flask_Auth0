@@ -19,7 +19,17 @@ API_BASE_URL='https://' + AUTH0_DOMAIN
 CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
 CLIENT_SECRET_TEST = "EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r" 
 
-
+auth0 = oauth.register(
+    'auth0',
+    client_id=AUTH0_DOMAIN,
+    client_secret=CLIENT_SECRET,
+    api_base_url=API_BASE_URL,
+    access_token_url=API_BASE_URL+'/oauth/token',
+    authorize_url=API_BASE_URL+'/authorize',
+    client_kwargs={
+        'scope': 'openid profile email',
+    },
+)
 # AuthError Exception
 '''
 AuthError Exception

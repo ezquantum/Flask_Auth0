@@ -15,8 +15,7 @@ from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import AuthError, requires_auth_from_session, requires_auth, CLIENT_ID, CLIENT_SECRET, CLIENT_ID_TEST, CLIENT_SECRET_TEST, API_BASE_URL, AUTH0_DOMAIN, API_AUDIENCE
-# from boto.s3.connection import S3Connection
+from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0
 
 
 # from flask_login import login_user
@@ -119,19 +118,7 @@ def dashboard(author_id = None):
 
 oauth = OAuth(app)
 
-auth0 = oauth.register(
-    'auth0',
-    client_id=os.environ.get('AUTH0_DOMAIN'),
-    client_secret=CLIENT_SECRET,
-    api_base_url=API_BASE_URL,
-    access_token_url=API_BASE_URL+'/oauth/token',
-    authorize_url=API_BASE_URL+'/authorize',
-    client_kwargs={
-        'scope': 'openid profile email',
-    },
 
-
-)
 
 # /server.py
 
