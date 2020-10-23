@@ -19,3 +19,6 @@ ehthumbs.db
 Thumbs.db
 .env*
 .env
+.pyc
+*.pyc
+.pyc*

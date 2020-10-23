@@ -7,16 +7,21 @@ from urllib.request import urlopen
 from authlib.integrations.flask_client import OAuth
 from flaskblogg import app
 
-##BLOCK
-# web application for blog
+# ##BLOCK
+# # web application for blog
 # AUTH0_DOMAIN = 'coffestack.us.auth0.com'
-AUTH0_DOMAIN=os.environ['AUTH0_DOMAIN']
-ALGORITHMS=['RS256']
-API_AUDIENCE=os.environ['API_AUDIENCE']
-CLIENT_ID=os.environ['CLIENT_ID']
-CLIENT_SECRET=os.environ['CLIENT_SECRET']
-API_BASE_URL='https://' + AUTH0_DOMAIN
+# ALGORITHMS=['RS256']
+# API_AUDIENCE=os.environ['API_AUDIENCE']
+# CLIENT_ID=os.environ['CLIENT_ID']
+# CLIENT_SECRET=os.environ['CLIENT_SECRET']
+# API_BASE_URL='https://' + AUTH0_DOMAIN
 
+AUTH0_DOMAIN = 'coffestack.us.auth0.com'
+ALGORITHMS=['RS256']
+API_AUDIENCE=os.environ.get('API_AUDIENCE')
+CLIENT_ID=os.environ.get('CLIENT_ID')
+CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
+API_BASE_URL='https://' + AUTH0_DOMAIN
 
 # https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
 
