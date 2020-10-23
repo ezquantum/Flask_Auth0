@@ -11,7 +11,7 @@ db = SQLAlchemy(app)
 
 #dev variable not hidden
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres://Amajimoda@localhost:5432/blogatog'
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres://epixojdhlwjsir:99617ba473d3f6609a9c93439e87bb31fb1ac9fa6d5d167e66e2e29d703261f0@ec2-52-71-153-228.compute-1.amazonaws.com:5432/d93kgv3fnkj0fg'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
