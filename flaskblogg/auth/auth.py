@@ -12,7 +12,7 @@ AUTH0_DOMAIN = S3Connection(os.environ['AUTH0_DOMAIN'])
 API_AUDIENCE = S3Connection(os.environ['API_AUDIENCE'])
 CLIENT_ID = S3Connection(os.environ['CLIENT_ID'])
 CLIENT_SECRET = S3Connection(os.environ['CLIENT_SECRET'])
-API_BASE_URL = S3Connection(os.environ['API_BASE_URL'])
+# API_BASE_URL = S3Connection(os.environ['API_BASE_URL'])
 CLIENT_ID_TEST = S3Connection(os.environ['CLIENT_ID_TEST'])
 CLIENT_SECRET_TEST = S3Connection(os.environ['CLIENT_SECRET_TEST'])
 ##BLOCK
@@ -22,7 +22,7 @@ ALGORITHMS = ['RS256']
 # API_AUDIENCE = 'blog'
 # CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
 # CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
-# API_BASE_URL='https://' + AUTH0_DOMAIN
+API_BASE_URL='https://' + AUTH0_DOMAIN
 
 # #machine to machine for blog (test)
 # CLIENT_ID_TEST = "kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW" 
