@@ -4,16 +4,16 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
-# from boto.s3.connection import S3Connection
+from boto.s3.connection import S3Connection
 
 # s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
-
+s3 = S3Connection(os.environ['AUTH0_DOMAIN'], os.environ['API_AUDIENCE'])
 ##BLOCK
 # web application for blog
-AUTH0_DOMAIN = 'coffestack.us.auth0.com'
+# AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'blog'
+# API_AUDIENCE = 'blog'
 CLIENT_ID='kfrmwrB4PMIsXz3ZxWl07tVNGejZQZgW'
 CLIENT_SECRET='EXS6SuDnxzclxF9qK_4BdgN58HsCxTPIiQ3HEvsNTDEGk2vczatJy-l3svPZwg4r'
 API_BASE_URL='https://' + AUTH0_DOMAIN
