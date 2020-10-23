@@ -11,7 +11,7 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = os.getenv('API_AUDIENCE')
 CLIENT_ID= os.getenv('CLIENT_ID')
 CLIENT_SECRET= os.getenv('CLIENT_SECRET')
-API_BASE_URL='https://' + AUTH0_DOMAIN
+# API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
 app.config['CLIENT_ID_TEST'] = os.getenv('CLIENT_ID_TEST')
