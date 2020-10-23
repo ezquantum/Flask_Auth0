@@ -25,7 +25,7 @@ oauth = OAuth(app)
 
 auth0 = oauth.register(
     'auth0',
-    client_id=os.environ["AUTH0_DOMAIN"],
+    client_id=os.getenv["AUTH0_DOMAIN"],
     client_secret=CLIENT_SECRET,
     api_base_url=API_BASE_URL,
     access_token_url=API_BASE_URL+'/oauth/token',
