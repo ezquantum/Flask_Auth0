@@ -14,8 +14,8 @@ CLIENT_SECRET= os.getenv('CLIENT_SECRET')
 # API_BASE_URL='https://' + AUTH0_DOMAIN
 
 #machine to machine for blog (test)
-app.config['CLIENT_ID_TEST'] = os.getenv('CLIENT_ID_TEST')
-app.config['LIENT_SECRET_TEST'] = os.getenv('CLIENT_SECRET_TEST')
+CLIENT_ID_TEST = os.getenv('CLIENT_ID_TEST')
+LIENT_SECRET_TEST = os.getenv('CLIENT_SECRET_TEST')
 
 # AuthError Exception
 '''
