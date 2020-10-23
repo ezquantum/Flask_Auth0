@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flaskblogg import app
+from flask_login import UserMixin
 
 ###################
 # database_name = "blogatog"
@@ -80,4 +81,4 @@ class Post(db.Model):
         db.session.delete(self)
         db.session.commit()
  
-db.create_all()
+db_drop_and_create_all()
