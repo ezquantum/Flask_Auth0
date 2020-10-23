@@ -95,7 +95,7 @@ def logout():
     session.clear()
     # Redirect user to logout endpoint
     params = {'returnTo': url_for('home', _external=True),
-              'client_id': CLIENT_ID}
+              'client_id': os.environ['CLIENT_ID']}
     return render_template('logout.html',
                            userinfo=None,
                            userinfo_pretty=None, indent=4)
