@@ -10,7 +10,7 @@ from urllib.request import urlopen
 
 
 ##BLOCK
-web application for blog
+# web application for blog
 AUTH0_DOMAIN = 'coffestack.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'blog'
