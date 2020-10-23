@@ -15,7 +15,7 @@ CLIENT_SECRET= os.getenv('CLIENT_SECRET')
 
 #machine to machine for blog (test)
 CLIENT_ID_TEST = os.getenv('CLIENT_ID_TEST')
-LIENT_SECRET_TEST = os.getenv('CLIENT_SECRET_TEST')
+CLIENT_SECRET_TEST = os.getenv('CLIENT_SECRET_TEST')
 
 # AuthError Exception
 '''
