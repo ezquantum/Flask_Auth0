@@ -15,7 +15,7 @@ from flaskblogg.forms import RegistrationForm, LoginForm, PostForm
 from jose import jwt
 from flaskblogg.models import Author, Post, Guest, db, db_drop_and_create_all
 from .auth import auth
-from .auth.auth import AuthError, requires_auth_from_session, requires_auth, auth0, oauth
+from .auth.auth import AuthError, requires_auth_from_session, requires_auth, AUTH0_DOMAIN, ALGORITHMS, API_AUDIENCE, CLIENT_ID, CLIENT_SECRET, API_BASE_URL
 
 
 # from flask_login import login_user
@@ -78,7 +78,20 @@ def register():
 #             flash('Login Unsuccessful. Please check username and password', 'danger')
 #     return render_template('login.html', title='Login', form=form)
 
+oauth = OAuth(app)
+# 'https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
 
+auth0 = oauth.register(
+    'auth0',
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    api_base_url=API_BASE_URL,
+    access_token_url=API_BASE_URL+'/oauth/token',
+    authorize_url=API_BASE_URL+'/authorize',
+    client_kwargs={
+        'scope': 'openid profile email',
+    },
+)
 # Auth0 redirect 
 @app.route('/login')
 def login():

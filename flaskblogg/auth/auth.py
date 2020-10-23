@@ -17,22 +17,23 @@ CLIENT_ID=os.environ['CLIENT_ID']
 CLIENT_SECRET=os.environ['CLIENT_SECRET']
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
+
 # https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
 
-oauth = OAuth(app)
-# 'https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
+# oauth = OAuth(app)
+# # 'https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
 
-auth0 = oauth.register(
-    'auth0',
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    api_base_url=API_BASE_URL,
-    access_token_url=API_BASE_URL+'/oauth/token',
-    authorize_url=API_BASE_URL+'/authorize',
-    client_kwargs={
-        'scope': 'openid profile email',
-    },
-)
+# auth0 = oauth.register(
+#     'auth0',
+#     client_id=CLIENT_ID,
+#     client_secret=CLIENT_SECRET,
+#     api_base_url=API_BASE_URL,
+#     access_token_url=API_BASE_URL+'/oauth/token',
+#     authorize_url=API_BASE_URL+'/authorize',
+#     client_kwargs={
+#         'scope': 'openid profile email',
+#     },
+# )
 '''@app.route('/login')
 def login():
     return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')

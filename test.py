@@ -1,24 +1,25 @@
 
 import unittest
 import os
-from flaskblogg import app
-# from . import run
-from flaskblogg.models import db, Author, Post
+from flask import Flask
+# from flaskblogg import app
+# # from . import run
+from flaskblogg.models import db, Author, Post, AUTH0_DOMAIN
 
 #Restrict permissions from USER
 #Allow user to read all, create post, delete own post, edit own post
 #Allow Admin to read all, create post, delete own post, edit own post, delete anyone posts, restrict editing someone's post
-# app = Flask(__name__)
-# app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-# database_name = "blogatog"
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+database_name = "blogatog"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://Amajimoda@localhost:5432/blogatog'
-# # db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
-# database_filename = 'site.db'
-# project_dir = os.path.dirname(os.path.abspath(__file__))
-database_path= os.getenv('SQLALCHEMY_DATABASE_URI')
-User = os.getenv('User')
-Admin = os.getenv('Admin')
+database_filename = 'site.db'
+project_dir = os.path.dirname(os.path.abspath(__file__))
+database_path='postgres://epixojdhlwjsir:99617ba473d3f6609a9c93439e87bb31fb1ac9fa6d5d167e66e2e29d703261f0@ec2-52-71-153-228.compute-1.amazonaws.com:5432/d93kgv3fnkj0fg'
+User = os.environ['User']
+Admin = os.environ['Admin']
 
 
 
@@ -31,7 +32,6 @@ def set_auth_header(role):
 
 
 
-
 class MainTestCase(unittest.TestCase):
 
     # executed prior to each test
@@ -41,8 +41,8 @@ class MainTestCase(unittest.TestCase):
         app.config['DEBUG'] = False
         app.config['SQLALCHEMY_DATABASE_URI'] = database_path
         self.app = app.test_client()
-        # db.drop_all()
-        # db.create_all()
+        db.drop_all()
+        db.create_all()
 
 
 
@@ -61,13 +61,14 @@ class MainTestCase(unittest.TestCase):
 
     def test_delete(self):
         res = self.app.get(
-            '/api/post/1/delete', headers=set_auth_header('User'))
-        self.assertEqual(res.status_code, 405)
+            '/api/post/1/remove', headers=set_auth_header('User'))
+        self.assertEqual(res.status_code, 200)
 
     def test_delete(self):
         res = self.app.get(
-            '/api/post/1/delete', headers=set_auth_header('Admin'))
+            '/api/post/1/remove', headers=set_auth_header('Admin'))
         self.assertEqual(res.status_code, 405)
+
 
 
     # def test_register(self):
