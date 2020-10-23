@@ -10,11 +10,11 @@ from flaskblogg import app
 ##BLOCK
 # web application for blog
 # AUTH0_DOMAIN = 'coffestack.us.auth0.com'
-AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN', None)
 ALGORITHMS = ['RS256']
-API_AUDIENCE = os.environ.get('API_AUDIENCE')
-CLIENT_ID=os.environ.get('CLIENT_ID')
-CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
+API_AUDIENCE = os.environ.get('API_AUDIENCE', None)
+CLIENT_ID=os.environ.get('CLIENT_ID', None)
+CLIENT_SECRET=os.environ.get('CLIENT_SECRET', None)
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
 oauth = OAuth(app)
