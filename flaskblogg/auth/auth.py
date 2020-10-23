@@ -17,10 +17,10 @@ CLIENT_ID=os.environ('CLIENT_ID')
 CLIENT_SECRET=os.environ('CLIENT_SECRET')
 API_BASE_URL='https://' + AUTH0_DOMAIN
 
-# https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri={REDIRECT_URI}
+# https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback
 
 oauth = OAuth(app)
-auth0= oauth.register()
+auth0= oauth.register(redirect_uri='https://AUTH_DOMAIN/authorize?audience=API_AUDIENCE&response_type=token&client_id=CLIENT_ID&redirect_uri=https://sqt594.herokuapp.com/callback')
 
 # auth0 = oauth.register(
 #     'auth0',
