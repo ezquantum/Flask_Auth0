@@ -83,8 +83,8 @@ def register():
 @app.route('/login')
 def login():
 
-    return redirect('login_url')
-    # return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback') This is the real one
+    # return redirect('login_url')
+    return auth0.authorize_redirect(redirect_uri='https://sqt594.herokuapp.com/callback')
 
     # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback') local machine only
 
