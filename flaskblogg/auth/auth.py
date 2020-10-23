@@ -4,8 +4,6 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
-from boto.s3.connection import S3Connection
-
 
 ##BLOCK
 # web application for blog
