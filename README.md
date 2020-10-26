@@ -58,7 +58,7 @@ Models: Includes primary ID, title, date_posted, content of post as well as auth
 In the `.env` file, the JWT token for each User Role
 - ADMIN
 - User
-
+x
 ## Roles
 
 USER

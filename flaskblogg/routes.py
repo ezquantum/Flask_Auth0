@@ -294,8 +294,6 @@ def new_post():
         return redirect(url_for('login'))
 
     if form.validate_on_submit():
-        # title = request.form['title']
-        # content = request.form['content']
 
         #find author by session
         message = Post(title=form.title.data, content=form.content.data, author_id = author_id)
@@ -338,6 +336,7 @@ def update_post(post_id):
     form.content.data = post.content
     return render_template('create_post.html', title='Update Post', form=form, legend='Update Post', userinfo=session['profile'])
 
+### will be working on this after submission
 
 #Patch all Guest author's posts with author_id specified below
 # @app.route('/patch-guest-author', methods=['PATCH'])
