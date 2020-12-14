@@ -1,6 +1,5 @@
-# FSND CAPSTONE: The Blog
+# The Blog 
 
-## capstone project for Udacity
 
 **Heroku link:** (https://sqt594.herokuapp.com/home)
 
@@ -14,7 +13,7 @@ Follow instructions to install the latest version of python for your platform in
 
 #### PIP Dependencies
 
-Once you have your virtual environment setup and running, install dependencies by navigating to the `/flasktutorialactual` directory and running:
+Once you have your virtual environment setup and running, install dependencies by navigating to the `/flaskpy` directory and running:
 
 ```
 pip install -r requirements.txt
@@ -24,7 +23,7 @@ This will install all of the required packages we selected within the `requireme
 
 ##### Key Dependencies
 
-- [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
+- [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses. 
 
 - [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use handle the lightweight sqlite database. You'll primarily work in api.py and can reference models.py.
 
@@ -43,9 +42,8 @@ flask run --reload
 
 ## Blog
 
-This custom blog utilizes SESSION as well as AUTH0. As unusual a combination, this is meant to satisfy some requirements within the rubric. 
+This custom blog utilizes SESSION as well as AUTH0. 
 
-Unit-testing, though feasible isn't an easily approachable subject in regards to session. I have included a file that includes JSON testing IF auth0 functions were used. This will return a 401 due to configuration. This is a positive and passing test for these purposes. 
 
 ## Models
 
@@ -146,5 +144,5 @@ python test.py
 special thanks
 
 The amazing mentors at udacity
-Corey Schaffer for creating elaborate tutorials
+Corey Schaffer
 My creative wife for all the help
